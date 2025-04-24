@@ -1,0 +1,57 @@
+<!-- templates/cart.html -->
+{% extends 'base.html' %}
+
+{% block title %}Your Cart - Flask Shop{% endblock %}
+
+{% block content %}
+    <h1>Your Shopping Cart</h1>
+    
+    {% if order.items %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('product_detail', product_id=item.product.id) }}">
+                                    {{ item.product.name }}
+                                </a>
+                            </td>
+                            <td>${{ "%.2f"|format(item.product.price) }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ "%.2f"|format(item.product.price * item.quantity) }}</td>
+                            <td>
+                                <a href="{{ url_for('remove_from_cart', item_id=item.id) }}" class="btn btn-sm btn-danger">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold">Total:</td>
+                        <td>${{ "%.2f"|format(order.total) }}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <div class="text-end mt-3">
+            <a href="{{ url_for('checkout') }}" class="btn btn-success">Proceed to Checkout</a>
+        </div>
+    {% else %}
+        <p>Your cart is empty.</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Continue Shopping</a>
+    {% endif %}
+{% endblock %}
